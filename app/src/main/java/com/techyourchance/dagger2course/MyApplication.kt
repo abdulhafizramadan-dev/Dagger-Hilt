@@ -2,6 +2,7 @@ package com.techyourchance.dagger2course
 
 import android.app.Application
 import com.techyourchance.dagger2course.networking.StackoverflowApi
+import com.techyourchance.dagger2course.questions.FetchQuestionDetailUseCase
 import com.techyourchance.dagger2course.questions.FetchQuestionsUseCase
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,9 +15,11 @@ class MyApplication: Application() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val stackoverflowApi: StackoverflowApi = retrofit.create()
+    private val stackoverflowApi: StackoverflowApi = retrofit.create()
 
     val fetchQuestionsUseCase get() = FetchQuestionsUseCase(stackoverflowApi)
+
+    val fetchQuestionDetails get() = FetchQuestionDetailUseCase(stackoverflowApi)
 
     override fun onCreate() {
         super.onCreate()
