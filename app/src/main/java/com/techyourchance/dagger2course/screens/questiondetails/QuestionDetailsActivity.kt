@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.techyourchance.dagger2course.questions.FetchQuestionDetailUseCase
+import com.techyourchance.dagger2course.screens.common.ScreensNavigator
 import com.techyourchance.dagger2course.screens.common.dialogs.DialogsNavigator
 import com.techyourchance.dagger2course.screens.common.dialogs.ServerErrorDialogFragment
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +19,10 @@ class QuestionDetailsActivity : AppCompatActivity(), QuestionDetailsViewMvc.List
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private lateinit var viewMvc: QuestionDetailsViewMvc
+
     private lateinit var fetchQuestionDetailUseCase: FetchQuestionDetailUseCase
+
+    private lateinit var screensNavigator: ScreensNavigator
 
     private lateinit var questionId: String
 
@@ -28,7 +32,10 @@ class QuestionDetailsActivity : AppCompatActivity(), QuestionDetailsViewMvc.List
         super.onCreate(savedInstanceState)
         viewMvc = QuestionDetailsViewMvc(layoutInflater = layoutInflater, parent = null)
         setContentView(viewMvc.rootView)
+
         fetchQuestionDetailUseCase = FetchQuestionDetailUseCase()
+
+        screensNavigator = ScreensNavigator(this)
 
         dialogsNavigator = DialogsNavigator(supportFragmentManager)
 
@@ -48,7 +55,7 @@ class QuestionDetailsActivity : AppCompatActivity(), QuestionDetailsViewMvc.List
     }
 
     override fun onBackClicked() {
-        finish()
+        screensNavigator.navigateBack()
     }
 
     private fun fetchQuestionDetails() {

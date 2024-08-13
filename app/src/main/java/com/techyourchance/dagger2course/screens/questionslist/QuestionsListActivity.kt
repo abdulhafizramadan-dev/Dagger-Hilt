@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.techyourchance.dagger2course.questions.FetchQuestionsUseCase
 import com.techyourchance.dagger2course.questions.Question
+import com.techyourchance.dagger2course.screens.common.ScreensNavigator
 import com.techyourchance.dagger2course.screens.common.dialogs.DialogsNavigator
 import com.techyourchance.dagger2course.screens.common.dialogs.ServerErrorDialogFragment
 import com.techyourchance.dagger2course.screens.questiondetails.QuestionDetailsActivity
@@ -18,7 +19,10 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMvc.Listener
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private lateinit var viewMvc: QuestionsListViewMvc
+
     private lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
+
+    private lateinit var screensNavigator: ScreensNavigator
 
     private lateinit var dialogsNavigator: DialogsNavigator
 
@@ -28,6 +32,7 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMvc.Listener
         super.onCreate(savedInstanceState)
         viewMvc = QuestionsListViewMvc(layoutInflater = layoutInflater, parent = null)
         setContentView(viewMvc.rootView)
+        screensNavigator = ScreensNavigator(this)
         fetchQuestionsUseCase = FetchQuestionsUseCase()
         dialogsNavigator = DialogsNavigator(supportFragmentManager)
     }
@@ -51,7 +56,7 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMvc.Listener
     }
 
     override fun onQuestionClicked(question: Question) {
-        QuestionDetailsActivity.start(this, question.id)
+        screensNavigator.navigateToQuestionDetails(question.id)
     }
 
     private fun fetchQuestions() {
