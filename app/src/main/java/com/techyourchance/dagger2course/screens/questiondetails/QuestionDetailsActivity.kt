@@ -17,31 +17,19 @@ import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class QuestionDetailsActivity : AppCompatActivity() {
+class QuestionDetailsActivity : AppCompatActivity(), QuestionDetailsViewMvc.Listener {
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    private lateinit var toolbar: MyToolbar
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var txtQuestionBody: TextView
-
     private lateinit var stackoverflowApi: StackoverflowApi
 
+    private lateinit var viewMvc: QuestionDetailsViewMvc
     private lateinit var questionId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_question_details)
-
-        txtQuestionBody = findViewById(R.id.txt_question_body)
-
-        // init toolbar
-        toolbar = findViewById(R.id.toolbar)
-        toolbar.setNavigateUpListener { onBackPressed() }
-
-        // init pull-down-to-refresh (used as a progress indicator)
-        swipeRefresh = findViewById(R.id.swipeRefresh)
-        swipeRefresh.isEnabled = false
+        viewMvc = QuestionDetailsViewMvc(layoutInflater = layoutInflater, parent = null)
+        setContentView(viewMvc.rootView)
 
         // init retrofit
         val retrofit = Retrofit.Builder()
@@ -56,27 +44,28 @@ class QuestionDetailsActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        viewMvc.registerListener(this)
         fetchQuestionDetails()
     }
 
     override fun onStop() {
         super.onStop()
+        viewMvc.unregisterListener(this)
         coroutineScope.coroutineContext.cancelChildren()
+    }
+
+    override fun onBackClicked() {
+        finish()
     }
 
     private fun fetchQuestionDetails() {
         coroutineScope.launch {
-            showProgressIndication()
+            viewMvc.showProgressIndication()
             try {
                 val response = stackoverflowApi.questionDetails(questionId)
                 if (response.isSuccessful && response.body() != null) {
                     val questionBody = response.body()!!.question.body
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        txtQuestionBody.text = Html.fromHtml(questionBody, Html.FROM_HTML_MODE_LEGACY)
-                    } else {
-                        @Suppress("DEPRECATION")
-                        txtQuestionBody.text = Html.fromHtml(questionBody)
-                    }
+                    viewMvc.bindQuestionBody(questionBody)
                 } else {
                     onFetchFailed()
                 }
@@ -85,7 +74,7 @@ class QuestionDetailsActivity : AppCompatActivity() {
                     onFetchFailed()
                 }
             } finally {
-                hideProgressIndication()
+                viewMvc.hideProgressIndication()
             }
 
         }
@@ -95,14 +84,6 @@ class QuestionDetailsActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .add(ServerErrorDialogFragment.newInstance(), null)
                 .commitAllowingStateLoss()
-    }
-
-    private fun showProgressIndication() {
-        swipeRefresh.isRefreshing = true
-    }
-
-    private fun hideProgressIndication() {
-        swipeRefresh.isRefreshing = false
     }
 
     companion object {
