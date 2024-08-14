@@ -10,12 +10,16 @@ import retrofit2.create
 
 class AppCompositionRoot {
 
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
-    private val stackoverflowApi: StackoverflowApi = retrofit.create()
+    private val stackoverflowApi: StackoverflowApi by lazy {
+        retrofit.create<StackoverflowApi>()
+    }
 
     val fetchQuestionsUseCase get() = FetchQuestionsUseCase(stackoverflowApi)
 
