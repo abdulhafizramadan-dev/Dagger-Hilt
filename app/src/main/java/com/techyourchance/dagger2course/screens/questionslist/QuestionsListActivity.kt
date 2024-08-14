@@ -1,82 +1,17 @@
 package com.techyourchance.dagger2course.screens.questionslist
 
 import android.os.Bundle
-import com.techyourchance.dagger2course.questions.FetchQuestionsUseCase
-import com.techyourchance.dagger2course.questions.Question
-import com.techyourchance.dagger2course.screens.common.ScreensNavigator
+import com.techyourchance.dagger2course.R
 import com.techyourchance.dagger2course.screens.common.activities.BaseActivity
-import com.techyourchance.dagger2course.screens.common.dialogs.DialogsNavigator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
 
-class QuestionsListActivity : BaseActivity(), QuestionsListViewMvc.Listener {
-
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
-    private lateinit var viewMvc: QuestionsListViewMvc
-
-    private lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
-
-    private lateinit var screensNavigator: ScreensNavigator
-
-    private lateinit var dialogsNavigator: DialogsNavigator
-
-    private var isDataLoaded = false
-
+class QuestionsListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewMvc = QuestionsListViewMvc(layoutInflater = layoutInflater, parent = null)
-        setContentView(viewMvc.rootView)
-        screensNavigator = compositionRoot.screensNavigator
-        fetchQuestionsUseCase = compositionRoot.fetchQuestionsUseCase
-        dialogsNavigator = compositionRoot.dialogsNavigator
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewMvc.registerListener(this)
-        if (!isDataLoaded) {
-            fetchQuestions()
+        setContentView(R.layout.layout_frame)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.frame_content, QuestionsListFragment())
+                .commit()
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        viewMvc.unregisterListener(this)
-        coroutineScope.coroutineContext.cancelChildren()
-    }
-
-    override fun onRefreshClicked() {
-        fetchQuestions()
-    }
-
-    override fun onQuestionClicked(question: Question) {
-        screensNavigator.navigateToQuestionDetails(question.id)
-    }
-
-    private fun fetchQuestions() {
-        coroutineScope.launch {
-            viewMvc.showProgressIndication()
-            try {
-                when(val result = fetchQuestionsUseCase.fetchLatestQuestions()) {
-                    is FetchQuestionsUseCase.Result.Success -> {
-                        viewMvc.bindData(result.questions)
-                        isDataLoaded = true
-                    }
-                    FetchQuestionsUseCase.Result.Failure -> onFetchFailed()
-                }
-            } catch (t: Throwable) {
-                onFetchFailed()
-            } finally {
-                viewMvc.hideProgressIndication()
-            }
-        }
-    }
-
-    private fun onFetchFailed() {
-        dialogsNavigator.showServerErrorDialog()
     }
 }
