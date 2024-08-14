@@ -41,7 +41,7 @@ class QuestionsListFragment : BaseFragment(), QuestionsListViewMvc.Listener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewMvc = QuestionsListViewMvc(layoutInflater = layoutInflater, parent = container)
+        viewMvc = compositionRoot.viewMvcFactory.newQuestionsListViewMvc(container)
         return viewMvc.rootView
     }
 
