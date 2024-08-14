@@ -1,11 +1,13 @@
 package com.techyourchance.dagger2course.common.composition
 
+import androidx.annotation.UiThread
 import com.techyourchance.dagger2course.Constants
 import com.techyourchance.dagger2course.networking.StackoverflowApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
+@UiThread
 class AppCompositionRoot {
 
     private val retrofit: Retrofit by lazy {
