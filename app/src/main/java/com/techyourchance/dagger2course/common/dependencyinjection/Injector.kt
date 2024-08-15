@@ -1,20 +1,50 @@
 package com.techyourchance.dagger2course.common.dependencyinjection
 
-import com.techyourchance.dagger2course.screens.questiondetails.QuestionDetailsActivity
-import com.techyourchance.dagger2course.screens.questionslist.QuestionsListFragment
+import com.techyourchance.dagger2course.questions.FetchQuestionDetailUseCase
+import com.techyourchance.dagger2course.questions.FetchQuestionsUseCase
+import com.techyourchance.dagger2course.screens.common.ScreensNavigator
+import com.techyourchance.dagger2course.screens.common.dialogs.DialogsNavigator
+import com.techyourchance.dagger2course.screens.common.viewsmvc.ViewMvcFactory
+import java.lang.reflect.Field
 
 class Injector(private val compositionRoot: PresentationCompositionRoot) {
-    fun inject(fragment: QuestionsListFragment) {
-        fragment.fetchQuestionsUseCase = compositionRoot.fetchQuestionsUseCase
-        fragment.screensNavigator = compositionRoot.screensNavigator
-        fragment.viewMvcFactory = compositionRoot.viewMvcFactory
-        fragment.viewMvcFactory = compositionRoot.viewMvcFactory
+    fun inject(client: Any) {
+        for (field in getAllFields(client)) {
+            if (isAnnotatedInjection(field)) {
+                injectField(client, field)
+            }
+        }
     }
 
-    fun inject(activity: QuestionDetailsActivity) {
-        activity.fetchQuestionDetailUseCase = compositionRoot.fetchQuestionDetails
-        activity.screensNavigator = compositionRoot.screensNavigator
-        activity.dialogsNavigator = compositionRoot.dialogsNavigator
-        activity.viewMvcFactory = compositionRoot.viewMvcFactory
+    private fun getAllFields(client: Any): Array<out Field> {
+        val clientClass = client::class.java
+        return clientClass.declaredFields
+    }
+
+    private fun isAnnotatedInjection(field: Field): Boolean {
+        for (annotation in field.annotations) {
+            if (annotation is Service) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun injectField(client: Any, field: Field) {
+        val initialAccessible = field.isAccessible
+        field.isAccessible = true
+        field.set(client, getServiceForClass(field.type))
+        field.isAccessible = initialAccessible
+    }
+
+    private fun getServiceForClass(type: Class<*>): Any {
+        return when (type) {
+            ScreensNavigator::class.java -> compositionRoot.screensNavigator
+            DialogsNavigator::class.java -> compositionRoot.dialogsNavigator
+            FetchQuestionsUseCase::class.java -> compositionRoot.fetchQuestionsUseCase
+            FetchQuestionDetailUseCase::class.java -> compositionRoot.fetchQuestionDetails
+            ViewMvcFactory::class.java -> compositionRoot.viewMvcFactory
+            else -> throw IllegalArgumentException("Unsupported service type: $type")
+        }
     }
 }

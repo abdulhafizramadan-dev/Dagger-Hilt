@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.techyourchance.dagger2course.common.dependencyinjection.Service
 import com.techyourchance.dagger2course.questions.FetchQuestionsUseCase
 import com.techyourchance.dagger2course.questions.Question
 import com.techyourchance.dagger2course.screens.common.ScreensNavigator
@@ -20,10 +21,10 @@ class QuestionsListFragment : BaseFragment(), QuestionsListViewMvc.Listener {
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
-    lateinit var screensNavigator: ScreensNavigator
-    lateinit var dialogsNavigator: DialogsNavigator
-    lateinit var viewMvcFactory: ViewMvcFactory
+    @Service private lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
+    @Service private lateinit var screensNavigator: ScreensNavigator
+    @Service private lateinit var dialogsNavigator: DialogsNavigator
+    @Service private lateinit var viewMvcFactory: ViewMvcFactory
 
     private lateinit var viewMvc: QuestionsListViewMvc
 
