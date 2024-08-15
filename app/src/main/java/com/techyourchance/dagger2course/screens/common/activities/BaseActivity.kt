@@ -2,11 +2,11 @@ package com.techyourchance.dagger2course.screens.common.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import com.techyourchance.dagger2course.MyApplication
+import com.techyourchance.dagger2course.common.dependencyinjection.Injector
 import com.techyourchance.dagger2course.common.dependencyinjection.activity.ActivityComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.activity.ActivityModule
-import com.techyourchance.dagger2course.common.dependencyinjection.DaggerActivityComponent
-import com.techyourchance.dagger2course.common.dependencyinjection.DaggerPresentationComponent
-import com.techyourchance.dagger2course.common.dependencyinjection.Injector
+import com.techyourchance.dagger2course.common.dependencyinjection.activity.DaggerActivityComponent
+import com.techyourchance.dagger2course.common.dependencyinjection.presentation.DaggerPresentationComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.presentation.PresentationComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.presentation.PresentationModule
 

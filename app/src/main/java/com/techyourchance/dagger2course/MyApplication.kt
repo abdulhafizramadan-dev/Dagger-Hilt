@@ -3,7 +3,7 @@ package com.techyourchance.dagger2course
 import android.app.Application
 import com.techyourchance.dagger2course.common.dependencyinjection.app.AppComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.app.AppModule
-import com.techyourchance.dagger2course.common.dependencyinjection.DaggerAppComponent
+import com.techyourchance.dagger2course.common.dependencyinjection.app.DaggerAppComponent
 
 class MyApplication: Application() {
 
