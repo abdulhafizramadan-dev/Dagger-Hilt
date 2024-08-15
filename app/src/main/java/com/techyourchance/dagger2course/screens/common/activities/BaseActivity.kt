@@ -3,8 +3,10 @@ package com.techyourchance.dagger2course.screens.common.activities
 import androidx.appcompat.app.AppCompatActivity
 import com.techyourchance.dagger2course.MyApplication
 import com.techyourchance.dagger2course.common.dependencyinjection.ActivityCompositionRoot
+import com.techyourchance.dagger2course.common.dependencyinjection.DaggerPresentationComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.Injector
-import com.techyourchance.dagger2course.common.dependencyinjection.PresentationCompositionRoot
+import com.techyourchance.dagger2course.common.dependencyinjection.PresentationComponent
+import com.techyourchance.dagger2course.common.dependencyinjection.PresentationModule
 
 abstract class BaseActivity: AppCompatActivity() {
 
@@ -14,9 +16,11 @@ abstract class BaseActivity: AppCompatActivity() {
         ActivityCompositionRoot(this, appCompositionRoot)
     }
 
-    private val compositionRoot: PresentationCompositionRoot by lazy {
-        PresentationCompositionRoot(activityCompositionRoot)
+    private val component: PresentationComponent by lazy {
+        DaggerPresentationComponent.builder()
+            .presentationModule(PresentationModule(activityCompositionRoot))
+            .build()
     }
 
-    protected val injector get() = Injector(compositionRoot)
+    protected val injector get() = Injector(component)
 }
