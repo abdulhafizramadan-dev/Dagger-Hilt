@@ -10,7 +10,7 @@ import com.techyourchance.dagger2course.screens.common.activities.BaseActivity
 abstract class BaseFragment: Fragment() {
     private val component: PresentationComponent by lazy {
         DaggerPresentationComponent.builder()
-            .presentationModule(PresentationModule((requireActivity() as BaseActivity).activityCompositionRoot))
+            .presentationModule(PresentationModule((requireActivity() as BaseActivity).activityComponent))
             .build()
     }
 

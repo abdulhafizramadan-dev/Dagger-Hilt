@@ -2,7 +2,9 @@ package com.techyourchance.dagger2course.screens.common.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import com.techyourchance.dagger2course.MyApplication
-import com.techyourchance.dagger2course.common.dependencyinjection.ActivityCompositionRoot
+import com.techyourchance.dagger2course.common.dependencyinjection.ActivityComponent
+import com.techyourchance.dagger2course.common.dependencyinjection.ActivityModule
+import com.techyourchance.dagger2course.common.dependencyinjection.DaggerActivityComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.DaggerPresentationComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.Injector
 import com.techyourchance.dagger2course.common.dependencyinjection.PresentationComponent
@@ -10,17 +12,19 @@ import com.techyourchance.dagger2course.common.dependencyinjection.PresentationM
 
 abstract class BaseActivity: AppCompatActivity() {
 
-    private val appCompositionRoot get() = (application as MyApplication).compositionRoot
+    private val appComponent get() = (application as MyApplication).appComponent
 
-    val activityCompositionRoot by lazy {
-        ActivityCompositionRoot(this, appCompositionRoot)
-    }
-
-    private val component: PresentationComponent by lazy {
-        DaggerPresentationComponent.builder()
-            .presentationModule(PresentationModule(activityCompositionRoot))
+    val activityComponent: ActivityComponent by lazy {
+        DaggerActivityComponent.builder()
+            .activityModule(ActivityModule(this, appComponent))
             .build()
     }
 
-    protected val injector get() = Injector(component)
+    private val presentationComponent: PresentationComponent by lazy {
+        DaggerPresentationComponent.builder()
+            .presentationModule(PresentationModule(activityComponent))
+            .build()
+    }
+
+    protected val injector get() = Injector(presentationComponent)
 }
