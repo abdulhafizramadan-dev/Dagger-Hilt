@@ -7,7 +7,6 @@ import com.techyourchance.dagger2course.common.dependencyinjection.activity.Acti
 import com.techyourchance.dagger2course.common.dependencyinjection.activity.DaggerActivityComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.presentation.DaggerPresentationComponent
 import com.techyourchance.dagger2course.common.dependencyinjection.presentation.PresentationComponent
-import com.techyourchance.dagger2course.common.dependencyinjection.presentation.PresentationModule
 
 abstract class BaseActivity: AppCompatActivity() {
 
@@ -21,7 +20,7 @@ abstract class BaseActivity: AppCompatActivity() {
 
     private val presentationComponent: PresentationComponent by lazy {
         DaggerPresentationComponent.builder()
-            .presentationModule(PresentationModule(activityComponent))
+            .activityComponent(activityComponent)
             .build()
     }
 
