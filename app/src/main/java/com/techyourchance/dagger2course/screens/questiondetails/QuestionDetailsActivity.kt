@@ -3,7 +3,6 @@ package com.techyourchance.dagger2course.screens.questiondetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.techyourchance.dagger2course.common.dependencyinjection.Service
 import com.techyourchance.dagger2course.questions.FetchQuestionDetailUseCase
 import com.techyourchance.dagger2course.screens.common.ScreensNavigator
 import com.techyourchance.dagger2course.screens.common.activities.BaseActivity
@@ -14,15 +13,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class QuestionDetailsActivity : BaseActivity(), QuestionDetailsViewMvc.Listener {
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    @field:Service private lateinit var fetchQuestionDetailUseCase: FetchQuestionDetailUseCase
-    @field:Service private lateinit var screensNavigator: ScreensNavigator
-    @field:Service private lateinit var dialogsNavigator: DialogsNavigator
-    @field:Service private lateinit var viewMvcFactory: ViewMvcFactory
+    @Inject lateinit var fetchQuestionDetailUseCase: FetchQuestionDetailUseCase
+    @Inject lateinit var screensNavigator: ScreensNavigator
+    @Inject lateinit var dialogsNavigator: DialogsNavigator
+    @Inject lateinit var viewMvcFactory: ViewMvcFactory
 
     private lateinit var viewMvc: QuestionDetailsViewMvc
 
