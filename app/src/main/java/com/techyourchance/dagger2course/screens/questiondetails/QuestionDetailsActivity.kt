@@ -58,12 +58,13 @@ class QuestionDetailsActivity : BaseActivity(), QuestionDetailsViewMvc.Listener 
             try {
                 when(val result = fetchQuestionDetailUseCase.fetchQuestionDetail(questionId)) {
                     is FetchQuestionDetailUseCase.Result.Success -> {
-                        viewMvc.bindQuestionBody(result.question.body)
+                        viewMvc.bindQuestionBody(result.question)
 
                     }
                     FetchQuestionDetailUseCase.Result.Failure -> onFetchFailed()
                 }
             } catch (t: Throwable) {
+                t.printStackTrace()
                 onFetchFailed()
             } finally {
                 viewMvc.hideProgressIndication()
