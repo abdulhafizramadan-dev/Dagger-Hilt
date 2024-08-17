@@ -3,8 +3,9 @@ package com.techyourchance.dagger2course.questions
 import com.techyourchance.dagger2course.networking.StackoverflowApi
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class FetchQuestionDetailUseCase(private val stackoverflowApi: StackoverflowApi) {
+class FetchQuestionDetailUseCase @Inject constructor(private val stackoverflowApi: StackoverflowApi) {
 
     sealed class Result {
         data class Success(val question: QuestionWithBody) : Result()
