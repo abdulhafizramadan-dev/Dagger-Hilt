@@ -2,6 +2,7 @@ package com.techyourchance.dagger2course.common.dependencyinjection.activity
 
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import com.techyourchance.dagger2course.screens.common.ScreensNavigator
 import dagger.Module
 import dagger.Provides
 
@@ -10,6 +11,10 @@ class ActivityModule(private val activity: AppCompatActivity) {
 
     @Provides
     fun activity() = activity
+
+    @ActivityScope
+    @Provides
+    fun screensModule(activity: AppCompatActivity) = ScreensNavigator(activity)
 
     @Provides
     fun fragmentManager(activity: AppCompatActivity) = activity.supportFragmentManager
