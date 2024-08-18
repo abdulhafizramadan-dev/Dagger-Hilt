@@ -2,6 +2,7 @@ package com.techyourchance.dagger2course.screens.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techyourchance.dagger2course.questions.FetchQuestionsUseCase
@@ -10,10 +11,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MyViewModel @Inject constructor(
-    private val fetchQuestionsUseCase: FetchQuestionsUseCase
+    private val fetchQuestionsUseCase: FetchQuestionsUseCase,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val _questions = MutableLiveData<List<Question>>()
+    private val _questions: MutableLiveData<List<Question>> = savedStateHandle.getLiveData("questions")
     val questions: LiveData<List<Question>> = _questions
 
     init {
