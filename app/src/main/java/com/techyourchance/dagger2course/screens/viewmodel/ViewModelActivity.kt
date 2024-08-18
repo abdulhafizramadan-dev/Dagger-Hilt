@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.techyourchance.dagger2course.R
 import com.techyourchance.dagger2course.screens.common.ScreensNavigator
 import com.techyourchance.dagger2course.screens.common.activities.BaseActivity
@@ -15,7 +16,9 @@ class ViewModelActivity: BaseActivity() {
 
     @Inject lateinit var screensNavigator: ScreensNavigator
 
-    @Inject lateinit var myViewModel: MyViewModel
+    @Inject lateinit var myViewModelFactory: MyViewModel.Factory
+
+    private lateinit var myViewModel: MyViewModel
 
     private lateinit var toolbar: MyToolbar
 
@@ -29,6 +32,8 @@ class ViewModelActivity: BaseActivity() {
         toolbar.setNavigateUpListener {
             screensNavigator.navigateBack()
         }
+
+        myViewModel = ViewModelProvider(this, myViewModelFactory)[MyViewModel::class.java]
 
         myViewModel.questions.observe(this, Observer {
                 questions -> Toast.makeText(this, "fetched ${questions.size} questions", Toast.LENGTH_SHORT).show()
