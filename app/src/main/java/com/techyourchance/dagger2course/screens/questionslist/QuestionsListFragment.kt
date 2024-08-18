@@ -66,6 +66,10 @@ class QuestionsListFragment : BaseFragment(), QuestionsListViewMvc.Listener {
         screensNavigator.navigateToQuestionDetails(question.id)
     }
 
+    override fun onViewModelClicked() {
+        screensNavigator.toViewModel()
+    }
+
     private fun fetchQuestions() {
         coroutineScope.launch {
             viewMvc.showProgressIndication()
