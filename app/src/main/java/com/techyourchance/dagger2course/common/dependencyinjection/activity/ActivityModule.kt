@@ -1,5 +1,6 @@
 package com.techyourchance.dagger2course.common.dependencyinjection.activity
 
+import android.app.Activity
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.techyourchance.dagger2course.screens.common.ScreensNavigator
@@ -20,9 +21,12 @@ abstract class ActivityModule {
 
     companion object {
         @Provides
+        fun appCompatActivity(activity: Activity): AppCompatActivity = activity as AppCompatActivity
+
+        @Provides
         fun fragmentManager(activity: AppCompatActivity) = activity.supportFragmentManager
 
         @Provides
-        fun layoutInflater(activity: AppCompatActivity): LayoutInflater = LayoutInflater.from(activity)
+        fun layoutInflater(activity: Activity): LayoutInflater = LayoutInflater.from(activity)
     }
 }
